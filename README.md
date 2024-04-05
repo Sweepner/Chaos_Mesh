@@ -13,6 +13,10 @@ Chaos Mesh to narzędzie służące do testowania odporności systemów na awari
 
 Chaos Mesh pozwala na symulowanie różnych rodzajów awarii, takich jak utrata węzła, opóźnienia sieciowe, zasłabnięcia usług czy awarie dysków. Dzięki temu zespoły deweloperskie mogą zrozumieć, jak aplikacja reaguje na takie zdarzenia i dostosować ją, aby była bardziej odporna na awarie.
 
+## Stos technologiczny
+
+Chaos Mesh, Docker, Kubernetes (Minikube), JVM (Java, Kotlin)
+
 ## Demo aplikacji
 
 https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9c0688dbd4e5
