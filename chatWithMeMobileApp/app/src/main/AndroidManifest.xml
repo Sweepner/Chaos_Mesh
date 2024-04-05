@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ChatWithMe"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".activities.call_screens.CallActivity"
+            android:exported="false"
+            android:showWhenLocked="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.call_screens.OutgoingInvitationActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.call_screens.IncomingInvitationActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.chat_screen.ViewFullImageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.chat_screen.MessageChatActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.welcome_screen.WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.login_screen.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.register_screen.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.main_screen.MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ChatWithMe.NoActionBar" />
+
+        <service
+            android:name=".utils.MyBackgroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false"/>
+        <service
+            android:name=".utils.FetchDataFromServerService"
+            android:exported="false"
+            android:enabled="true"/>
+        <!--<service
+            android:name=".activities.call_screens.CallService"
+            android:enabled="true"
+            android:exported="false"/>-->
+        <service
+            android:name=".activities.call_screens.TimerService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".activities.call_screens.SendAudioService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".activities.call_screens.ReceiveAudioService"
+            android:enabled="true"
+            android:exported="false"/>
+    </application>
+
+</manifest>

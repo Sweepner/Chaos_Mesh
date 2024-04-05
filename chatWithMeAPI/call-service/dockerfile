@@ -1,0 +1,5 @@
+FROM openjdk:17
+ARG JAR_FILE=*.jar
+EXPOSE 8083
+COPY target/call-service-1.0-SNAPSHOT.jar spring.jar
+ENTRYPOINT ["java", "-jar", "spring.jar"]

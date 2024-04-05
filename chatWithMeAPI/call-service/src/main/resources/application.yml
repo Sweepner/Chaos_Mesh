@@ -1,0 +1,18 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/chatWithMe-chat'
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect

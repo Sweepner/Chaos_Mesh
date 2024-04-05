@@ -1,0 +1,32 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/chatWithMe-authorization'
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+springdoc:
+  model-converters:
+    pageable-converter:
+      enabled: true
+  api-docs:
+    path: /chatWithMe-authorization
+  swagger-ui:
+    path: /doc
+    doc-expansion: none
+    tags-sorter: alpha
+    operations-sorter: method
+    syntax-highlight:
+      theme: arta
+

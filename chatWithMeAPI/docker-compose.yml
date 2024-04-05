@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-chatWithMeAPI
+    user: "root:root"
+    networks: 
+      - chatWithMe
+    ports:
+      - 5432:5432
+  authorization:
+    image: chat-authorization
+    container_name: chat-authorization
+    user: "root:root"
+    networks: 
+      - chatWithMe
+    ports:
+      - 8081:8081
+    links:
+            - postgres
+  chat:
+    image: chat-chat
+    container_name: chat-chat
+    user: "root:root"
+    networks: 
+      - chatWithMe
+    ports:
+      - 8082:8082
+    links:
+            - postgres
+  call:
+    image: chat-call
+    container_name: chat-call
+    networks:
+      - chatWithMe
+    ports:
+      - 8083:8083    
+    links:
+            - postgres      
+ 
+            
+networks:
+  chatWithMe:
+   external: true
