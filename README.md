@@ -287,7 +287,7 @@ localPort = 443
 remotePort = 443
 ```
 
-W celu umożliwienia prziekierowania z portu 6000 na proxy na port 22 na lokalnej maszynie wystawiono port 22 na prywatnej maszynie za pomocą komend:
+W celu umożliwienia przekierowania z portu 6000 na proxy na port 22 na lokalnej maszynie wystawiono port 22 na prywatnej maszynie za pomocą komend:
 
 ```
 sudo firewall-cmd --permanent --zone=public --add-port=22/udp
