@@ -346,6 +346,10 @@ data:
   POSTGRES_PASSWORD: myPassword
 ```
 
+```
+kubectl apply -f postgres-configmap.yaml 
+```
+
 Utworzenie volumenu dla kontenera:
 
 ```yaml
@@ -378,6 +382,10 @@ spec:
   resources:
     requests:
       storage: 10Gi
+```
+
+```
+kubectl apply -f postgres-volume.yaml
 ```
 
 Utworzenie deployemntu oraz serwisu:
@@ -425,6 +433,10 @@ spec:
     - port: 5432
   selector:
     app: postgres
+```
+
+```
+kubectl apply -f postgres-deployment.yaml
 ```
 
 
