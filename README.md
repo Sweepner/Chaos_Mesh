@@ -206,6 +206,97 @@ https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9
 
 ## 5. Konfiguracja środowiska
 
+Środowisko utworzono na własnym sprzęcie. Zakupiono serwer posiadający 32 GB ramu oraz 1 TB SSD. Za pomocą frps - https://github.com/fatedier/frp wystawiono serwer do internetu. W celu posiadania adresu IP za NATem skorzystano z zawsze darmowej maszyny wirtualnej oracle (dalej nazwanej tutaj proxy) z 1 GB ramu oraz 1 corem. Maszyna ta służy jako proxy do prywatnej maszyny. Na proxy uruchomiono frps w następującej konfiguracji (frps.toml - plik konfiguracyjny):
+
+```
+[common]
+bindPort = 7000
+vhost_https_port = 443
+tls_enable = true
+tls_cert_file = /etc/letsencrypt/live/www.rodzon.site/fullchain.pem
+tls_key_file = /etc/letsencrypt/live/www.rodzon.site/privkey.pem
+```
+Stworzono usługę systemd dla frps w celu automatycznego uruchomienia przekierowania na prywatny serwer po restarcie proxy. Zawartość pliku frps.service:
+
+```
+[Unit]
+Description=FRPS Service
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/frps -c /usr/local/bin/frps.toml
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Uruchomiono usługę komendą:
+
+```
+sudo systemctl status frps.service
+```
+
+Dodano usługę do autostartu maszyny komendą:
+```
+sudo systemctl enable frps.service
+```
+
+Aby frps oraz frpc komunikowały się otworzono porty 7000 oraz 6000 na proxy używająć komendy:
+```
+sudo firewall-cmd --permanent --zone=public --add-port=7000/udp
+sudo firewall-cmd --permanent --zone=public --add-port=7000/tcp
+sudo firewall-cmd --permanent --zone=public --add-port=6000/udp
+sudo firewall-cmd --permanent --zone=public --add-port=6000/tcp
+sudo firewall-cmd --reload
+```
+Port 7000 służy do komunikacji pomiędzy klientem a serwerem frp. Port 6000 służy do prziekierowania na port 22 na prywatnej maszynie.
+
+
+Na prywatnej maszynie zainstalowano system operacyjny Rocky Linux - https://rockylinux.org/pl/. Następnie skonfigurowano oraz uruchomiono frpc z następującą konfiguracją (zawartość pliku frpc.toml):
+```
+serverAddr = "158.101.209.102"
+serverPort = 7000
+
+[[proxies]]
+name = "ssh"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
+
+[[proxies]]
+name = "postgres"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 5432
+remotePort = 5432
+
+[[proxies]]
+name = "http"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 80
+remotePort = 80
+
+[[proxies]]
+name = "https"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 443
+remotePort = 443
+```
+
+W celu umożliwienia prziekierowania z portu 6000 na proxy na port 22 na lokalnej maszynie wystawiono port 2 na prywatnej maszynie następującą komendą:
+
+```
+sudo firewall-cmd --permanent --zone=public --add-port=22/udp
+sudo firewall-cmd --permanent --zone=public --add-port=22/tcp
+sudo firewall-cmd --reload
+```
+
+Uruchomiono  usługę ssh na porcie 22.
+TODO: dodanie frpc do systemd, zainstalowanie minikube, dockera, systemctl
 ## 6. Metoda instalacji
 
 ## 7. Sposób odtworzenia krok po kroku
