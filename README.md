@@ -234,7 +234,7 @@ WantedBy=multi-user.target
 Uruchomiono usługę komendą:
 
 ```
-sudo systemctl status frps.service
+sudo systemctl start frps.service
 ```
 
 Dodano usługę do autostartu maszyny komendą:
@@ -242,7 +242,7 @@ Dodano usługę do autostartu maszyny komendą:
 sudo systemctl enable frps.service
 ```
 
-Aby frps oraz frpc komunikowały się otworzono porty 7000 oraz 6000 na proxy używająć komendy:
+Aby frps oraz frpc komunikowały się otworzono porty 7000 oraz 6000 na proxy używająć komend:
 ```
 sudo firewall-cmd --permanent --zone=public --add-port=7000/udp
 sudo firewall-cmd --permanent --zone=public --add-port=7000/tcp
@@ -287,7 +287,7 @@ localPort = 443
 remotePort = 443
 ```
 
-W celu umożliwienia prziekierowania z portu 6000 na proxy na port 22 na lokalnej maszynie wystawiono port 2 na prywatnej maszynie następującą komendą:
+W celu umożliwienia prziekierowania z portu 6000 na proxy na port 22 na lokalnej maszynie wystawiono port 22 na prywatnej maszynie za pomocą komend:
 
 ```
 sudo firewall-cmd --permanent --zone=public --add-port=22/udp
@@ -296,7 +296,38 @@ sudo firewall-cmd --reload
 ```
 
 Uruchomiono  usługę ssh na porcie 22.
-TODO: dodanie frpc do systemd, zainstalowanie minikube, dockera, systemctl
+
+W celu umożliwienia zdalnego rebootowania prywatnego serwera utworzono usługę systemd dla frpc.
+Plik frpc.service:
+
+```
+[Unit]
+Description=FRPC Service
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/frpc -c /usr/local/bin/frpc.toml
+
+[Install]
+WantedBy=multi-user.target
+```
+Uruchomiono usługę komendą:
+
+```
+sudo systemctl start frpc.service
+```
+
+Dodano usługę do autostartu maszyny komendą:
+```
+sudo systemctl enable frpc.service
+```
+
+Na prywatnym serwerze zainstalowano:
+- minikube
+- docker
+- kubectl
+  
 ## 6. Metoda instalacji
 
 ## 7. Sposób odtworzenia krok po kroku
