@@ -388,7 +388,7 @@ spec:
 kubectl apply -f postgres-volume.yaml
 ```
 
-Utworzenie deployemntu oraz serwisu:
+Utworzenie deploymentu oraz serwisu:
 
 ```yaml
 apiVersion: apps/v1
