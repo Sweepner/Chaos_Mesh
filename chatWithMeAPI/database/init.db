@@ -1,0 +1,15 @@
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'chatWithMe-authorization'
+    ) THEN
+        CREATE DATABASE "chatWithMe-authorization";
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'chatWithMe-chat'
+    ) THEN
+        CREATE DATABASE "chatWithMe-chat";
+    END IF;
+END$$;
+
