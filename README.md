@@ -254,7 +254,7 @@ https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9
 ## 5. Konfiguracja środowiska
 
 ### 5.1 Przygotowanie środowiska
-Środowisko utworzono na własnym sprzęcie. Zakupiono serwer posiadający 32 GB ramu oraz 1 TB SSD. Za pomocą frps - https://github.com/fatedier/frp wystawiono serwer do internetu. W celu posiadania adresu IP za NATem skorzystano z zawsze darmowej maszyny wirtualnej oracle (dalej nazwanej tutaj proxy) z 1 GB ramu oraz 1 corem. Maszyna ta służy jako proxy do prywatnej maszyny. Na proxy uruchomiono frps w następującej konfiguracji (frps.toml - plik konfiguracyjny):
+Środowisko utworzono na własnym sprzęcie. Zakupiono serwer posiadający 32 GB ramu oraz 1 TB SSD. Za pomocą frps - https://github.com/fatedier/frp wystawiono serwer do internetu. W celu posiadania adresu IP za NATem skorzystano z zawsze darmowej maszyny wirtualnej Oracle (dalej nazwanej tutaj proxy) z 1 GB ramu oraz 1 corem. Maszyna ta służy jako proxy do prywatnej maszyny. Na proxy uruchomiono frps w następującej konfiguracji (frps.toml - plik konfiguracyjny):
 
 ```
 [common]
@@ -290,7 +290,7 @@ Dodano usługę do autostartu maszyny komendą:
 sudo systemctl enable frps.service
 ```
 
-Aby frps oraz frpc komunikowały się otworzono porty 7000 oraz 6000 na proxy używająć komend:
+Aby frps oraz frpc komunikowały się otwarto porty 7000 oraz 6000 na proxy używając komend:
 ```
 sudo firewall-cmd --permanent --zone=public --add-port=7000/udp
 sudo firewall-cmd --permanent --zone=public --add-port=7000/tcp
@@ -376,11 +376,11 @@ Na prywatnym serwerze zainstalowano:
 - docker
 - kubectl
 
-### 5.2 Uruchomienie usług w kubernetesie
+### 5.2 Uruchomienie usług w Kubernetesie
 
 #### 5.2.1 Postgres
 
-Utworzono pliki do deploymentu bazy danych postgres w kubernetesie:
+Utworzono pliki do deploymentu bazy danych Postgres w Kubernetesie:
 
 Utworzenie konfig mapy:
 
@@ -491,7 +491,7 @@ kubectl apply -f postgres-deployment.yaml
 ```
 #### 5.2.2 Spring Boot
 
-Utworzenie plików do deployemntu aplikacji spring bootowych w kubernetesie:
+Utworzenie plików do deploymentu aplikacji Spring Bootowych w Kubernetesie:
 
 Serwis autoryzacyjny:
 
