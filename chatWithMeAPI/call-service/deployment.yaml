@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-call-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-call-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-call-deployment
+    spec:
+      containers:
+        - name: chat-call
+          image: rodzonvm/chat-call-service:1.0.0
+          ports:
+            - containerPort: 8083

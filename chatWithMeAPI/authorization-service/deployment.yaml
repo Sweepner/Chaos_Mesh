@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-authorization-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-authorization-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-authorization-deployment
+    spec:
+      containers:
+        - name: chat-authorization
+          image: rodzonvm/chat-authorization-service:1.0.0
+          ports:
+            - containerPort: 8081

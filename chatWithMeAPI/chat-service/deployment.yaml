@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-message-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-message-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-message-deployment
+    spec:
+      containers:
+        - name: chat-message
+          image: rodzonvm/chat-message-service:1.0.0
+          ports:
+            - containerPort: 8082
