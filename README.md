@@ -576,7 +576,7 @@ spec:
 
 ```
 
-Wszystki trzy aplikacjie uruchomiono w następujący sposób:
+Wszystki trzy aplikacje uruchomiono w następujący sposób:
 
 ```
 kubectl apply -f deployment.yaml
