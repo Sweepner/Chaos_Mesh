@@ -182,6 +182,53 @@ Akcja Corrupt pozwala na ustawienie symulacji uszkodzenia części przesyłanych
 
 ### 2.3. Stress testy
 
+Chaos Mesh pozwala na przeprowadzanie eksperymentów StressChaos pozwalających na symulację scenariuszy stresu wewnątrz kontenerów. Eksperymenty można tworzyć przy użyciu Chaos Dashboard lub bezpośrednio w plikach konfiguracyjnych *.yaml.
+
+W eksperymentach StressChaos dostępne są następujące parametry:
+- rodzaj stresu: CPU, pamięć,
+- planowany czas trwania eksperymentu,
+- tryb eksperymentu: losowy pod lub wybór spośród kwalifikujących się podów – wszystkie, wybrana liczba, wybrany/losowy procent,
+- nazwa kontenera, do którego wstrzykiwany jest test,
+- selektor określający docelowy pod.
+
+#### 2.3.1. Obciążenie pamięci
+W przypadku testów obciążeń pamięci - **MemoryStressor** - dostępne są następujące parametry:
+- ```workers``` – liczba wątków obciążających pamięć,
+- ```size``` – ostateczny rozmiar zajętej pamięci lub procent całkowitego rozmiaru pamięci,
+- ```time``` – czas osiągnięcia rozmiaru pamięci określonego w size. Model wzrostu jest modelem liniowym,
+- ```oomScoreAdj``` – modyfikacja wyniku procesu, którego używa linuxowy Out-Of-Memory Killer do określenia, który proces zabić w pierwszej kolejności. Wartość -1000 – proces jest całkowicie chroniony przed zabiciem, wartość +1000 – proces jest najbardziej prawdopodobnym kandydatem do zabicia w przypadku braku pamięci.
+
+#### 2.3.2. Obciążenie procesora
+W przypadku testów obciążeń procesora - **CPUStressor** - dostępne są następujące parametry:
+- ```workers``` – liczba wątków obciążających procesor,
+- ```load``` – procent zajętości procesora. Wartość 0 – nie jest dodawany żaden dodatkowy procesor, wartość 100 – pełne obciążenie. Ostateczna suma obciążenia procesora to workers * load.
+
+#### 2.3.3 Przykładowa konfiguracja stress testu
+Przykładowy eksperyment zdefiniowany w pliku *.yaml: utworzenie procesu w wybranym kontenerze, który będzie stale przydzielał oraz odczytywał i zapisywał w pamięci, zajmując do 256MB pamięci:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: memory-stress-example
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    labelSelectors:
+      'app': 'app1'
+  stressors:
+    memory:
+      workers: 4
+      size: '256MB'
+```
+
+Eksperyment zostanie utworzony po wykonaniu polecenia:
+
+```
+kubectl apply -f <filename>.yaml
+```
+
 ### 2.4. Architektura Chaos Mesh
 
 Chaos Mesh jest oparty na Kubernetes CRD (Custom Resource Definition). Do zarządzania różnymi eksperymentami definiuje wiele typów CRD opartych na różnych rodzajach awarii i implementuje osobne kontrolery dla różnych obiektów CRD. Do głównych komponentów Chaos Mesh należą:
