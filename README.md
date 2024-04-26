@@ -331,6 +331,8 @@ Na prywatnym serwerze zainstalowano:
 
 ### 5.2 Uruchomienie usług w kubernetesie
 
+#### 5.2.1 Postgres
+
 Utworzono pliki do deploymentu bazy danych postgres w kubernetesie:
 
 Utworzenie konfig mapy:
@@ -440,6 +442,7 @@ spec:
 ```
 kubectl apply -f postgres-deployment.yaml
 ```
+### 5.2.2 Spring Boot
 
 Utworzenie plików do deployemntu aplikacji spring bootowych w kubernetesie:
 
