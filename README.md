@@ -467,7 +467,7 @@ spec:
             - containerPort: 8081
 ```
 
-Sewrwis:
+Serwis:
 
 ```yaml
 apiVersion: v1
