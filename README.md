@@ -250,7 +250,7 @@ sudo firewall-cmd --permanent --zone=public --add-port=6000/udp
 sudo firewall-cmd --permanent --zone=public --add-port=6000/tcp
 sudo firewall-cmd --reload
 ```
-Port 7000 służy do komunikacji pomiędzy klientem a serwerem frp. Port 6000 służy do prziekierowania na port 22 na prywatnej maszynie.
+Port 7000 służy do komunikacji pomiędzy klientem a serwerem frp. Port 6000 służy do przekierowania na port 22 na prywatnej maszynie.
 
 
 Na prywatnej maszynie zainstalowano system operacyjny Rocky Linux - https://rockylinux.org/pl/. Następnie skonfigurowano oraz uruchomiono frpc z następującą konfiguracją (zawartość pliku frpc.toml):
@@ -439,6 +439,147 @@ spec:
 kubectl apply -f postgres-deployment.yaml
 ```
 
+Utworzenie plików do deployemntu aplikacji spring bootowych w kubernetesie:
+
+Serwis autoryzacyjny:
+
+Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-authorization-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-authorization-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-authorization-deployment
+    spec:
+      containers:
+        - name: chat-authorization
+          image: rodzonvm/chat-authorization-service:1.0.0
+          ports:
+            - containerPort: 8081
+```
+
+Sewrwis:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-authorization-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: chat-authorization-deployment
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+```
+
+Serwis do wysyłania wiadomości:
+
+Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-message-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-message-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-message-deployment
+    spec:
+      containers:
+        - name: chat-message
+          image: rodzonvm/chat-message-service:1.0.0
+          ports:
+            - containerPort: 8082
+
+```
+
+Serwis:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-message-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: chat-message-deployment
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+
+```
+
+Serwis do audio rozmów:
+
+Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-call-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-call-deployment
+  template:
+    metadata:
+      labels:
+        app: chat-call-deployment
+    spec:
+      containers:
+        - name: chat-call
+          image: rodzonvm/chat-call-service:1.0.0
+          ports:
+            - containerPort: 8083
+
+```
+
+Serwis:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-call-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: chat-call-deployment
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+
+```
+
+Wszystki trzy aplikacjie uruchomiono w następujący sposób:
+
+```
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
 
 ## 6. Metoda instalacji
 
