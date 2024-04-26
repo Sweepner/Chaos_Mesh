@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: rodzonvm/rodzon:postgres
+          image: rodzonvm/postgres:1.0.0
           ports:
             - containerPort: 5432
           envFrom:
