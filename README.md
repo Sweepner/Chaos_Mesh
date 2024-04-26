@@ -206,6 +206,7 @@ https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9
 
 ## 5. Konfiguracja środowiska
 
+### 5.1 Przygotowanie środowiska
 Środowisko utworzono na własnym sprzęcie. Zakupiono serwer posiadający 32 GB ramu oraz 1 TB SSD. Za pomocą frps - https://github.com/fatedier/frp wystawiono serwer do internetu. W celu posiadania adresu IP za NATem skorzystano z zawsze darmowej maszyny wirtualnej oracle (dalej nazwanej tutaj proxy) z 1 GB ramu oraz 1 corem. Maszyna ta służy jako proxy do prywatnej maszyny. Na proxy uruchomiono frps w następującej konfiguracji (frps.toml - plik konfiguracyjny):
 
 ```
@@ -328,6 +329,7 @@ Na prywatnym serwerze zainstalowano:
 - docker
 - kubectl
 
+### 5.2 Uruchomienie usług w kubernetesie
 
 Utworzono pliki do deploymentu bazy danych postgres w kubernetesie:
 
