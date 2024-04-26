@@ -442,7 +442,7 @@ spec:
 ```
 kubectl apply -f postgres-deployment.yaml
 ```
-### 5.2.2 Spring Boot
+#### 5.2.2 Spring Boot
 
 Utworzenie plików do deployemntu aplikacji spring bootowych w kubernetesie:
 
