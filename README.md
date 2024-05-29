@@ -243,9 +243,58 @@ Chaos Mesh, Docker, Kubernetes (Minikube), JVM (Java, Kotlin)
 
 ## 3. Koncepcja studium przypadku
 
-Aplikacja, która została poddana testom to szyfrowany komunikator z audiorozmową oparta o architekturę mikroserwisów.
+Aplikacja, która została poddana testom to szyfrowany komunikator z czatem tekstowym i audiorozmową. System ten został zaimplementowany na urządzenia mobilne z systemem operacyjnym Android. Został zaprojektowany w oparciu o architekturę mikroserwisów. Do najważniejszych funkcjonalności aplikacji należą:
+- przeglądanie czatów z innymi użytkownikami,
+- wysyłanie wiadomości tekstowych i zdjęć w czasie rzeczywistym,
+- nawiązywanie połączeń audio,
+- rejestracja i logowanie użytkowników,
+- import i eksport klucza prywatnego użytkownika używanego do odszyfrowywania wiadomości zaszyfrowanych jego kluczem publicznym,
+- możliwość integracji z API systemu dowolnego innego klienta oferującego usługę videorozmów.
 
-### 3.1. Demo aplikacji
+### 3.1. Architektura systemu
+
+System opiera się na architekturze mikroserwisów. Wydzielono trzy mikroserwisy, każdy z nich posiada swoją własną bazę danych i jest niezależny od pozostałych. Jedną z głównych zalet takiego rozwiązania jest skalowalność - w sytuacji, gdy obciążenie systemu zwiększy się w konkretnym mikroserwisie to nie ma potrzeby duplikowania całej aplikacji. Takie podejście jest wymagane w przypadku skalowania horyzontalnego dla monolitu. W architekturze mikroserwisów duplikujemy tylko najbardziej obciążony mikroserwis. Kolejną zaletą tej architektury jest niezależność, dzięki której zalogowani użytkownicy mogą swobodnie korzystać z aplikacji nawet kiedy serwis odpowiedzialny za logowanie przestanie działać.
+
+<br>
+<p align="center">
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/65e25d5d-2493-48b8-9ce1-26318cdd1973" width="500">
+</p>
+
+### 3.2. Demo aplikacji
+
+Zamieszczono zrzuty ekranu przedstawiające przykładowe widoki aplikacji.
+
+Przykładowy czat z innym użytkownikiem:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f033b36f-b62a-43a4-8124-b2f8d1732973" width="300">
+<br>
+
+Przesłanie zdjęcia:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f565f5d3-e6e5-4235-b6af-3c408563e3c2" width="300">
+<br>
+
+Połączenie przychodzące:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/a91590de-b1c9-4101-a7f5-5cbce10e3e09" width="300">
+<br>
+
+Rozmowa głosowa:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/53a62bff-5d2e-4dee-836b-198f85bc2751" width="300">
+<br>
+
+Import klucza prywatnego:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/8b84eb24-fb0d-4904-a623-8f2afc975e37" width="300">
+<br>
+
+Informacja o błędnym kluczu prywatnym użytkownika:
+<br><br>
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/da833424-6056-4e34-ba89-71764909553c" width="300">
+<br>
+
+Załączono film prezentujący przykładowe użytkowanie aplikacji:
 
 https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9c0688dbd4e5
 
