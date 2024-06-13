@@ -260,39 +260,109 @@ System opiera się na architekturze mikroserwisów. Wydzielono trzy mikroserwisy
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/65e25d5d-2493-48b8-9ce1-26318cdd1973" width="500">
 </p>
 
-### 3.2. Demo aplikacji
+#### 3.1.1. Backend
+
+Backend składa się z trzech mikroserwisów: serwera autoryzacyjngo, chatu i połączeń. Endpointy pogrupowano ze względu na funkcjonalności. W każdej grupie funkcjonalności znajdują się takie pakiety jak:
+- *controller* - zawiera klasy punktu wejścia do aplikacji, posiada metody HTTP takie jak POST, PATCH, PUT, GET oraz DELETE. Dzięki nim możliwa jest realizacja operacji CRUD. Kontroler po otrzymaniu konkretnego zapytania HTTP od klienta deleguje otrzymaną informację do serwisu, który wykonuje zadaną czynność.
+- *service* - zawiera klasy serwisów, które są odpowiedzialne za wykonanie zadanego zapytania HTTP, np. utworzenie zasobu, aktualizację istniejącego zasobu lub usunięcie wskazanych zasobów. W celu aktualizacji konkretnego zasobu serwis za pośrednictwem repozytorium pobiera z bazy danych konkretny rekord tabeli w postaci encji bazodanowej (obiekt *DAO*, ang. *Data Access Object*) na podstawie otrzymanego od klienta ID obiektu. Następnie aktualizuje wybrane pola obiektu *DAO* na podstawie zapytania od klienta, zapisuje zaktualizowany obiekt *DAO* w bazie danych oraz zwraca odpowiednią informację do kontrolera, który oddelegowuje ją do klienta.
+- *repository* - zawiera interfejsy repozytorium, z których każdy jest skorelowany z konkretną tabelą w bazie danych. Tabela reprezentowana jest w kodzie jako obiekt *DAO*.
+- *model* - zawiera klasy zapytań od klienta (requesty), obiekty *DTO* (ang. *Data Transfer Object*, obiekty transferowane z klienta do serwera i odwrotnie) oraz klasy reprezentujące konkretne tabele w bazie danych - encje bazodanowe *DAO*.
+
+<br>
+<p align="center">
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/6eb12e25-16fe-4726-8878-9d85e8545caa" width="700">
+</p>
+
+#### 3.1.2. Frontend
+    
+Projekt klienta to aplikacja na system Android, która łączy się z konkretnymi mikroserwisami za pomocą protokołów HTTP oraz WS. Komunikacja pomiędzy klientem i serwisami odbywa się za pomocą formatu JSON zgodnie ze standardem REST.
+
+Pliki projektu zostały pogrupowane w pakiety dotyczące wybranych ekranów aplikacji. Każdy ekran widoczny w aplikacji posiada odpowiadającą mu klasę dziedziczącą po klasie AppCompatActivity oraz plik XML definiujący jego wygląd. Ekran, który generuje zapytanie HTTP do serwera posiada swój interfejs, w którym zdefiniowane są wszystkie możliwe zapytania HTTP danego ekranu. Dane są przekazywane pomiędzy widokami za pomocą intentów co minimalizuje liczbę requestów HTTP do serwera.
+
+### 3.2. Stos technologiczny i narzędzia
+
+W projekcie aplikacji wykorzystano następujące technologie:
+
+- aplikacja serwera: język Java, framework Spring Boot,
+- aplikacja klienta: język Kotlin, środowisko Android Studio,
+- baza danych PostgreSQL,
+- Docker,
+- Git.
+
+### 3.3. Demo aplikacji
+
+#### 3.3.1. Przypadki użycia
+
+Przypadki użycia występujące w aplikacji przedstawiono w formie diagramu UML.
+
+<br>
+<p align="center">
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/43401ee1-cadd-465c-842a-5bb47465848e" width="600">
+</p>
+
+#### 3.3.2. Scenariusze przypadków użycia
+
+**Wysłanie wiadomości tekstowej do wybranego użytkownika**
+
+Zalogowany użytkownik z poziomu widoku prywatnych konwersacji lub widoku wyszukiwania użytkowników wybiera osobę, do której chce wysłać wiadomość. Po kliknięciu na danego użytkownika wybiera opcję wysłania wiadomości „Send message”. Po przejściu na ekran konwersacji z wybranym użytkownikiem naciska na pole tekstowe na dole ekranu z napisem „Write message here…”. Po pojawieniu się klawiatury użytkownik wprowadza treść wiadomości i zatwierdza jej przesłanie przyciskiem „Send”. Wiadomość zostaje przesłana do odbiorcy i pojawia się w widoku konwersacji.
+
+**Przesłanie zdjęcia w wybranej konwersacji**
+
+Zalogowany użytkownik wybiera osobę, do której chce przesłać zdjęcie z poziomu widoku prywatnych konwersacji lub widoku wyszukiwania użytkowników. Po kliknięciu na danego użytkownika wybiera opcję wysłania wiadomości „Send message”. Po przejściu na ekran konwersacji z wybranym użytkownikiem naciska na przycisk dodawania zdjęcia w lewym dolnym rogu ekranu. Wyświetlane jest okno dialogowe umożliwiające wybór zdjęcia z plików przechowywanych na urządzeniu. Wygląd okna jest zależny od systemu operacyjnego urządzenia. Użytkownik wybiera zdjęcie. Po wybraniu następuje wysłanie zdjęcia do odbiorcy.
+
+**Nawiązanie połączenia audio z innym użytkownikiem**
+
+Zalogowany użytkownik wybiera osobę, z którą chce nawiązać połączenie audio. Może tego dokonać w widoku prywatnych konwersacji lub w widoku wyszukiwania użytkowników. Po kliknięciu na wybraną osobę wyświetlane są dodatkowe opcje, z których użytkownik wybiera opcję wysłania wiadomości „Send message”. Po przejściu na ekran konwersacji z wybranym użytkownikiem należy nacisnąć przycisk „Call” w prawym górnym rogu ekranu. Wyświetlone zostanie okno dialogowe z wyborem dostawcy oprogramowania obsługującego połączenia. Użytkownik wybiera jedną z opcji, po czym następuje próba nawiązania połączenia z odbiorcą. Do czasu odebrania połączenia przez odbiorcę nadawany jest sygnał dźwiękowy dzwonienia. W przypadku odebrania połączenia przez odbiorcę użytkownicy mogą ze sobą rozmawiać. Opcjonalnie mogą wyciszyć mikrofon. W przypadku anulowania połączenia przychodzącego przez nadawcę lub po upływie minuty połączenie jest przerywane.
+
+**Eksportowanie klucza prywatnego**
+
+Zalogowany użytkownik na głównym ekranie wybiera opcję menu – przycisk z trzema kropkami położony w prawym górnym rogu ekranu. Z listy dostępnych operacji wybiera opcję „Export private key”. Po wyświetleniu okna dialogowego z prośbą o potwierdzenie operacji hasłem użytkownik podaje swoje hasło i zatwierdza czynność przyciskiem „Accept”. Wyświetlane jest okno dialogowe umożliwiające zapis pliku z kluczem prywatnym w wybranej lokalizacji w pamięci urządzenia. Wygląd okna jest zależny od systemu operacyjnego urządzenia. Użytkownik wybiera miejsce, w którym chce zapisać plik oraz opcjonalnie zmienia jego nazwę. Zatwierdza operację przyciskiem „Save”.
+
+**Importowanie klucza prywatnego**
+
+Zalogowany użytkownik na głównym ekranie wybiera opcję menu – przycisk z trzema kropkami położony w prawym górnym rogu ekranu. Z listy dostępnych operacji wybiera opcję „Import private key”. Po wyświetleniu okna dialogowego z informacją o możliwości utraty klucza prywatnego użytkownik akceptuje ostrzeżenie. Wyświetlane jest okno dialogowe umożliwiające wybór pliku z kluczem prywatnym z wybranej lokalizacji w pamięci urządzenia. Wygląd okna jest zależny od systemu operacyjnego urządzenia. Użytkownik wybiera plik z kluczem prywatnym i potwierdza operację importu.
+
+#### 3.3.3. Widoki aplikacji
 
 Zamieszczono zrzuty ekranu przedstawiające przykładowe widoki aplikacji.
 
-Przykładowy czat z innym użytkownikiem:
-<br><br>
+<br>
+<p align="center">Przykładowy czat z innym użytkownikiem</p>
+<p align="center">
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f033b36f-b62a-43a4-8124-b2f8d1732973" width="300">
-<br>
+</p>
 
-Przesłanie zdjęcia:
-<br><br>
+<br>
+<p align="center">Przesłanie zdjęcia</p>
+<p align="center">
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f565f5d3-e6e5-4235-b6af-3c408563e3c2" width="300">
-<br>
+</p>
 
-Połączenie przychodzące:
-<br><br>
+<br>
+<p align="center">Połączenie przychodzące</p>
+<p align="center">
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/a91590de-b1c9-4101-a7f5-5cbce10e3e09" width="300">
-<br>
+</p>
 
-Rozmowa głosowa:
-<br><br>
+<br>
+<p align="center">Rozmowa głosowa</p>
+<p align="center">
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/53a62bff-5d2e-4dee-836b-198f85bc2751" width="300">
-<br>
+</p>
 
-Import klucza prywatnego:
-<br><br>
+<br>
+<p align="center">Import klucza prywatnego</p>
+<p align="center">
 <img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/8b84eb24-fb0d-4904-a623-8f2afc975e37" width="300">
-<br>
+</p>
 
-Informacja o błędnym kluczu prywatnym użytkownika:
-<br><br>
-<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/da833424-6056-4e34-ba89-71764909553c" width="300">
 <br>
+<p align="center">Informacja o błędnym kluczu prywatnym użytkownika</p>
+<p align="center">
+<img src="https://github.com/Vertemi/Chaos_Mesh/assets/72327045/da833424-6056-4e34-ba89-71764909553c" width="300">
+</p>
+
+#### 3.3.4. Film demo aplikacji
 
 Załączono film prezentujący przykładowe użytkowanie aplikacji:
 
@@ -684,6 +754,23 @@ kubectl apply -f service.yaml
 
 ## 6. Metoda instalacji
 
+### 6.1. Instalacja aplikacji bazowej
+
+W celu użytkowania aplikacji należy zainstalować ją na wybranym urządzeniu z systemem operacyjnym Android.
+
+Minimalne wymagania sprzętowe i programowe:
+- 150MB wolnego miejsca na dysku,
+- 2GB pamięci RAM,
+- system operacyjny w wersji *Nougat* (Android 7 - SDK 24) lub wyższej.
+
+W celu zainstalowania aplikacji należy pobrać udostępniony przez administratora systemu plik .apk programu oraz zainstalować go na urządzeniu mobilnym spełniającym minimalne wymagania sprzętowe i programowe.
+
+Aby móc używać aplikacji należy zbudować obrazy dockerowe za pomocą polecenia ```docker build -tag <nazwa_obrazu>``` z plików *dockerfile* dla trzech mikroserwisów oraz bazy danych, utworzyć sieć dockerową za pomocą polecenia ```docker network create <nazwa_sieci>```, uzupełnić skrypt *docker-compose.yml* o nazwy utworzonych obrazów dockerowych mikroserwisów, bazy danych oraz o nazwę utworzonej sieci dockerowej, a następnie uruchomić skrypt *docker-compose.yml* za pomocą polecenia ```docker-compose up -d```, który uruchomi wszystkie serwisy wraz z bazą danych. W celu uruchomienia aplikacji bez Dockera można wystawić serwisy jako usługi systemowe.
+
+Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były dostępne poza siecią lokalną localhost. Sugerowane jest skonfigurowanie serwera proxy (serwer pośredniczący) i wystawienie usług do Internetu za jego pośrednictwem.
+
+### 6.2. Instalacja aplikacji z Chaos Mesh
+
 ## 7. Sposób odtworzenia krok po kroku
 
 ## 8. Demonstracyjny sposób wdrożenia
@@ -693,3 +780,5 @@ kubectl apply -f service.yaml
 ## 10. Bibliografia
 
 - https://chaos-mesh.org/docs/
+- https://minikube.sigs.k8s.io/docs/
+- https://kubernetes.io/pl/docs/tutorials/hello-minikube/
