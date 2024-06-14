@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-message-service
+spec:
+  selector:
+    app: chat-message-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8082

@@ -1,0 +1,29 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: spring-boot-ingressroute
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/chat/authorization`)
+      kind: Rule
+      services:
+        - name: chat-authorization-service
+          port: 80
+      middlewares:
+        - name: chat-authorization-strip-prefix
+    - match: PathPrefix(`/chat/message`)
+      kind: Rule
+      services:
+        - name: chat-message-service
+          port: 80
+      middlewares:
+        - name: chat-message-strip-prefix
+    - match: PathPrefix(`/chat/call`)
+      kind: Rule
+      services:
+        - name: chat-call-service
+          port: 80
+      middlewares:
+        - name: chat-call-strip-prefix

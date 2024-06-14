@@ -1,0 +1,53 @@
+image:
+  name: traefik
+  tag: v2.11
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  spec:
+    externalTrafficPolicy: Local
+  externalIPs:
+    - 10.102.13.33
+  ports:
+    web:
+      port: 80
+      expose: true
+      exposedPort: 80
+      protocol: TCP
+# Configuring logs
+logs:
+  general:
+    level: TRACE
+  access:
+    enabled: true
+    fields:
+      general:
+        defaultMode: keep
+
+rbac:
+  enabled: true
+
+
+additionalArguments:
+#  - "--providers.kubernetescrd"
+#  - "--entrypoints.web.address=:80"
+#  - "--entrypoints.websecure.address=:443"
+#  - "--entrypoints.websecure.http.tls=true"
+#  - "--entrypoints.websecure.http.tls.certificates.certFile=/home/rodzon/ceryfikat_https/fullchain.pem"
+#  - "--entrypoints.websecure.http.tls.certificates.keyFile=/home/rodzon/ceryfikat_https/privkey.pem"
+  - "--api.dashboard=true"
+
+#volumes:
+#  - name: ssl-certs
+#    mountPath: /etc/ssl/certs
+#    type: secret
+#    readOnly: true
+#    secretName: traefik-cert
+#  - name: ssl-private
+#    mountPath: /etc/ssl/private
+#    type: secret
+#    readOnly: true
+#    secretName: traefik-key
+
