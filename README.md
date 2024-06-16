@@ -777,10 +777,9 @@ Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były d
 
 ### JVM
 
-### JVM
 Eksperyment polega na rzuceniu wyjątku, kiedy ktoś się spróbuje zalogować.
 Dokument, który taki eksperyment przygotowuje używając Chaos Mesh wygląda następująco:
-```
+```yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: JVMChaos
 metadata:
