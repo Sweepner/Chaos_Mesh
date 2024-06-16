@@ -775,6 +775,31 @@ Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były d
 
 ## 8. Demonstracyjny sposób wdrożenia
 
+### JVM
+
+### JVM
+Eksperyment polega na rzuceniu wyjątku, kiedy ktoś się spróbuje zalogować.
+Dokument, który taki eksperyment przygotowuje używając Chaos Mesh wygląda następująco:
+```
+apiVersion: chaos-mesh.org/v1alpha1
+kind: JVMChaos
+metadata:
+  name: throw-exception
+  namespace: default
+spec:
+  action: exception
+  class: pl.rodzon.endpoints.auth.controller.AuthController
+  method: registration
+  exception: java.lang.RuntimeException
+  mode: all
+  selector:
+    namespaces:
+      - default
+```
+Podajemy metodę w klasie, której zmienimy zachowanie. Zmieniamy zachowanie w taki sposób, żeby zawsze rzucała wyjątek. 
+[Film z demonstracji działania](https://youtu.be/xgSpCa-w6wI)
+Po kilku minutach pod się restartuje i wraca do poprawnego stanu.
+
 ## 9. Podsumowanie i wnioski
 
 ## 10. Bibliografia
