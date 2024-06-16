@@ -798,6 +798,7 @@ spec:
 Podajemy metodę w klasie, której zmienimy zachowanie. Zmieniamy zachowanie w taki sposób, żeby zawsze rzucała wyjątek. 
 [Film z demonstracji działania](https://youtu.be/xgSpCa-w6wI)
 Po kilku minutach pod się restartuje i wraca do poprawnego stanu.
+<img width="1511" alt="image" src="https://github.com/Falon452/Chaos_Mesh/assets/64365037/4c0e6a16-4b55-4dc1-b009-36b9cc81456b">
 
 ## 9. Podsumowanie i wnioski
 
