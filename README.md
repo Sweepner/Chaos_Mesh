@@ -782,28 +782,43 @@ Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były d
 
 ### JVM
 
-Eksperyment polega na rzuceniu wyjątku, kiedy ktoś się spróbuje zalogować.
-Dokument, który taki eksperyment przygotowuje używając Chaos Mesh wygląda następująco:
+Eksperyment polega na wydłużeniu czasu procesowania metody wysyłania wiadomości.
+Po zaaplikowaniu poniższego pliku do kubernetessa, czas wysyłania każdej wiadomości w aplikacji jest opóźniony o 3 sekundy.
+
+Plik delay_messages.yaml
+
 ```yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: JVMChaos
 metadata:
-  name: throw-exception
-  namespace: default
+  name: delay-messages
+  namespace: chaos-mesh
 spec:
-  action: exception
-  class: pl.rodzon.endpoints.auth.controller.AuthController
-  method: registration
-  exception: java.lang.RuntimeException
-  mode: all
+  action: latency
+  class: ChatController
+  method: sendRealTimeMessage
+  latency: 3000
+  mode: one
   selector:
     namespaces:
       - default
+    labelSelectors:
+      app: ch
+at-message-deployment
 ```
-Podajemy metodę w klasie, której zmienimy zachowanie. Zmieniamy zachowanie w taki sposób, żeby zawsze rzucała wyjątek. 
-[Film z demonstracji działania](https://youtu.be/xgSpCa-w6wI)
-Po kilku minutach pod się restartuje i wraca do poprawnego stanu.
-<img width="1511" alt="image" src="https://github.com/Falon452/Chaos_Mesh/assets/64365037/4c0e6a16-4b55-4dc1-b009-36b9cc81456b">
+
+Uruchomiemie eksperymentu:
+
+```
+kubectl apply -f delay_messages.yaml
+```
+
+Demonstracja działania:
+
+
+https://github.com/Falon452/Chaos_Mesh/assets/64365037/11a69047-3378-4296-9d36-98e0a9459319
+
+
 
 ### Pod Failure
 
