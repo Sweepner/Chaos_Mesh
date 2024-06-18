@@ -612,7 +612,7 @@ kubectl apply -f postgres-deployment.yaml
 
 Utworzenie plików do deploymentu aplikacji Spring Bootowych w Kubernetesie:
 
-Serwis autoryzacyjny:
+#### 5.2.2.1 Serwis autoryzacyjny:
 
 Deployment:
 
@@ -655,7 +655,7 @@ spec:
       targetPort: 8081
 ```
 
-Serwis do wysyłania wiadomości:
+#### 5.2.2.2 Serwis do wysyłania wiadomości:
 
 Deployment:
 
@@ -700,7 +700,7 @@ spec:
 
 ```
 
-Serwis do audio rozmów:
+#### 5.2.2.3 Serwis do audio rozmów:
 
 Deployment:
 
@@ -752,6 +752,11 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
 
+### 5.3 Ingress route do klastra kubernetesowego.
+
+
+
+
 ## 6. Metoda instalacji
 
 ### 6.1. Instalacja aplikacji bazowej
@@ -799,6 +804,85 @@ Podajemy metodę w klasie, której zmienimy zachowanie. Zmieniamy zachowanie w t
 [Film z demonstracji działania](https://youtu.be/xgSpCa-w6wI)
 Po kilku minutach pod się restartuje i wraca do poprawnego stanu.
 <img width="1511" alt="image" src="https://github.com/Falon452/Chaos_Mesh/assets/64365037/4c0e6a16-4b55-4dc1-b009-36b9cc81456b">
+
+### Pod Failure
+
+Eksperyment polega na spowodowaniu awarii poda z użyciem technologii Chaos Mesh. Zaaplikowanie do kubernetesa następującego pliku yaml powoduje awarię poda wybranego w pliku (w tym wypadku odpowiadającego za autoryzację użytkowników).
+
+Plik pod_authorization_failure.yaml:
+
+``` yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-failure-example
+  namespace: chaos-mesh
+spec:
+  action: pod-failure
+  mode: one
+  duration: '30s'
+  scheduler:
+    cron: '@every 1m'
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: chat-authorization-deployment
+```
+
+Uruchomiemie eksperymentu:
+
+```
+kubectl apply -f pod_authorization_failure.yaml
+```
+
+Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
+
+[ChaosMesh_pod_failure.webm](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/7368f5f1-6d2b-49d2-b2e7-0212e959e339)
+
+### Massive Pod Failure
+
+Eksperyment polega na spowodowaniu masowych awarii losowych podów z użyciem technologii Chaos Mesh. Utworzenie poniższego pliku yaml oraz uruchomienie poniższego skryptu bashowego rozpoczyna eksperyment.
+Skrypt co 5 sekund aplikuje plik yaml, który powoduje awarię losowego poda a następnie usuwa utworzony typ PodChaos co kończy pętlę. Pętla trwa do czasu przerwania skryptu przez użytkownika.
+
+Plik massive_pod_failure.yaml:
+
+``` yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-kill-all
+  namespace: chaos-mesh
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - default
+```
+
+Skrypt bashowy aplikujący i usuwający PodChaos (startMassiveDestruction.sh):
+
+``` bash
+while true; do
+  kubectl apply -f massive_pod_failure.yaml
+  sleep  5
+  if  kubectl get PodChaos -n chaos-mesh | grep pod-kill-all; then
+    kubectl delete PodChaos pod-kill-all -n chaos-mesh
+  fi
+done
+```
+
+Uruchomiemie eksperymentu:
+
+```
+./startMassiveDestruction.sh
+```
+Plik massive_pod_failure.yaml musi znajdować się w tej samej lokalizacji co skrypt startMassiveDestruction.sh.
+
+Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
+
+[ChaosMesh_massive_pod_failure.webm](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/6be59dc6-f130-4eb5-9160-d4b15559f2e4)
 
 ## 9. Podsumowanie i wnioski
 
