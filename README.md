@@ -780,7 +780,7 @@ Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były d
 
 ## 8. Demonstracyjny sposób wdrożenia
 
-### JVM
+### 8.1. JVM
 
 Eksperyment polega na wydłużeniu czasu procesowania metody wysyłania wiadomości.
 Po zaaplikowaniu poniższego pliku do kubernetessa, czas wysyłania każdej wiadomości w aplikacji jest opóźniony o 3 sekundy.
@@ -820,7 +820,7 @@ https://github.com/Falon452/Chaos_Mesh/assets/64365037/11a69047-3378-4296-9d36-9
 
 
 
-### Pod Failure
+### 8.2. Pod Failure
 
 Eksperyment polega na spowodowaniu awarii poda z użyciem technologii Chaos Mesh. Zaaplikowanie do kubernetesa następującego pliku yaml powoduje awarię poda wybranego w pliku (w tym wypadku odpowiadającego za autoryzację użytkowników).
 
@@ -855,7 +855,7 @@ Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
 
 [ChaosMesh_pod_failure.webm](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/7368f5f1-6d2b-49d2-b2e7-0212e959e339)
 
-### Massive Pod Failure
+### 8.3. Massive Pod Failure
 
 Eksperyment polega na spowodowaniu masowych awarii losowych podów z użyciem technologii Chaos Mesh. Utworzenie poniższego pliku yaml oraz uruchomienie poniższego skryptu bashowego rozpoczyna eksperyment.
 Skrypt co 5 sekund aplikuje plik yaml, który powoduje awarię losowego poda a następnie usuwa utworzony typ PodChaos co kończy pętlę. Pętla trwa do czasu przerwania skryptu przez użytkownika.
@@ -899,6 +899,80 @@ Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
 
 [ChaosMesh_massive_pod_failure.webm](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/6be59dc6-f130-4eb5-9160-d4b15559f2e4)
 
+
+### 8.4. Stress Scenarios
+
+Zrealizowano dwa rodzaje eksperymentów typu Stress Chaos: obciążanie pamięci i procesora przydzielonych wybranemu podowi.
+
+#### 8.4.1. Memory Stress
+
+Eksperyment polega na nagłym obciążeniu pamięci przydzielonej do wskazanego poda. W konfiguracji testu zdefiniowano następujące parametry:
+- docelowy pod: odpowiedzialny za autoryzację użytkowników czatu,
+- liczba wątków aplikujących obciążenie pamięci: 4,
+- rozmiar pamięci zajętej w wyniku eksperymentu: 256MB.
+
+Plik ```stress_test_memory.yaml``` zawierający konfigurację testu:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: memory-stress-1
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      'app': 'chat-authorization-deployment'
+  stressors:
+    memory:
+      workers: 4
+      size: '256MB'
+```
+
+Uruchomienie eksperymentu:
+
+```kubectl apply -f stress_test_memory.yaml```
+
+Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard oraz polecenia ```watch -n 1 kubectl top pods```. Efekt testu był zgodny z oczekiwaniem, zauważono nagły wzrost obciążenia pamięci wskazanego poda. Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+
+
+#### 8.4.2. CPU Stress
+
+Eksperyment polega na nagłym obciążeniu CPU przydzielonego do wskazanego poda. W konfiguracji testu zdefiniowano następujące parametry:
+- docelowy pod: odpowiedzialny za autoryzację użytkowników czatu,
+- liczba wątków aplikujących obciążenie procesora: 4,
+- zajętość procesora osiągnięta w wyniku eksperymentu: 80%.
+
+Plik ```stress_test_cpu.yaml``` zawierający konfigurację testu:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: cpu-stress-1
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      'app': 'chat-authorization-deployment'
+  stressors:
+    cpu:
+      workers: 4
+      load: 80
+```
+
+Uruchomienie eksperymentu:
+
+```kubectl apply -f stress_test_cpu.yaml```
+
+Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard oraz polecenia ```watch -n 1 kubectl top pods```. Efekt testu był zgodny z oczekiwaniem, zauważono nagły wzrost obciążenia procesora dla wskazanego poda. Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+
 ## 9. Podsumowanie i wnioski
 
 ## 10. Bibliografia
@@ -906,3 +980,4 @@ Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
 - https://chaos-mesh.org/docs/
 - https://minikube.sigs.k8s.io/docs/
 - https://kubernetes.io/pl/docs/tutorials/hello-minikube/
+- https://github.com/kubernetes/dashboard
