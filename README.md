@@ -973,11 +973,13 @@ Uruchomienie eksperymentu:
 
 Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard oraz polecenia ```watch -n 1 kubectl top pods```. Efekt testu był zgodny z oczekiwaniem, zauważono nagły wzrost obciążenia procesora dla wskazanego poda. Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
 
-8.5. Network
+#### 8.5. Network
+
 Eksperyment polega na rozdieleniu sieci dla poda odpowiedzialnego za autoryzację i Treafika. Spowoduje to brak możliwości połączenia między tymi elementami, a tym samym brak możliwości autoryzacji użytkownika. 
 
-Konfigurację zdefiniowano w następującym pliku networkpartition.yaml:
+Konfigurację zdefiniowano w następującym pliku ```networkpartition.yaml```:
 
+```yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: NetworkChaos
 metadata:
@@ -1001,13 +1003,16 @@ spec:
       pods:
         default:
           - chat-authorization-deployment-7b477fd644-zg65x
-
+```
 Uruchomiemie eksperymentu:
 
-kubectl apply -f networkpartition.yaml
+```kubectl apply -f networkpartition.yaml```
+
 Demonstracja działania:
 
-https://github.com/Eternalynx/Chaos_Mesh/assets/50592516/752d8cf8-8e0d-4174-aa47-8ef5e9b89a30
+
+https://github.com/Eternalynx/Chaos_Mesh/assets/50592516/276576db-1d97-465f-bfe0-493b25809311
+
 
 Jak widać przed uruchomieniem eksperymentu użytkownik był w stanie się zalogować, natomiast po uruchomieniu przycisk logowania przestał reagować, a po chwili od naciśnięcia go pojawił się komunikat z błędem
 
