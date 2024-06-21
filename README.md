@@ -902,22 +902,24 @@ Na poniższym filmie przedstawiono poprawne działanie eksperymentu.
 
 ### 8.4. Stress Scenarios
 
-Zrealizowano dwa rodzaje eksperymentów typu Stress Chaos: obciążanie pamięci i procesora przydzielonych wybranemu podowi.
+Zrealizowano dwa rodzaje eksperymentów typu Stress Chaos: obciążanie pamięci i procesora przydzielonych wybranym podom na klastrze.
 
 #### 8.4.1. Memory Stress
 
-Eksperyment polega na nagłym obciążeniu pamięci przydzielonej do wskazanego poda. W konfiguracji testu zdefiniowano następujące parametry:
-- docelowy pod: odpowiedzialny za autoryzację użytkowników czatu,
-- liczba wątków aplikujących obciążenie pamięci: 4,
-- rozmiar pamięci zajętej w wyniku eksperymentu: 256MB.
+#### 8.4.1.1. Memory Stress - wybrany pod
 
-Plik ```stress_test_memory.yaml``` zawierający konfigurację testu:
+Eksperyment polega na nagłym obciążeniu pamięci RAM przydzielonej do wskazanego poda. W konfiguracji testu zdefiniowano następujące parametry:
+- docelowy pod: pod o nazwie _chat-authorization-deployment_ z domyślnej przestrzeni nazw, odpowiedzialny za autoryzację użytkowników czatu,
+- liczba wątków aplikujących obciążenie pamięci: 4,
+- rozmiar pamięci zajętej w wyniku eksperymentu: 4096MB.
+
+Plik ```stress_test_memory_selected_pod.yaml``` zawierający konfigurację testu:
 
 ```yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: StressChaos
 metadata:
-  name: memory-stress-1
+  name: memory-stress-selected-pod
   namespace: chaos-mesh
 spec:
   mode: one
@@ -929,38 +931,114 @@ spec:
   stressors:
     memory:
       workers: 4
-      size: '256MB'
+      size: '4096MB'
 ```
 
 Uruchomienie eksperymentu:
 
-```kubectl apply -f stress_test_memory.yaml```
+```kubectl apply -f stress_test_memory_selected_pod.yaml```
 
-Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard oraz polecenia ```watch -n 1 kubectl top pods```. Efekt testu był zgodny z oczekiwaniem, zauważono nagły wzrost obciążenia pamięci wskazanego poda. Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard z API Metrics Server oraz polecenia ```watch -n 1 kubectl top pods```.
+Efekt testu był zgodny z oczekiwaniem - po zaaplikowaniu eksperymentu zauważono nagły wzrost obciążenia pamięci RAM wskazanego poda. Po usunięciu testu obciążenie pamięci RAM wróciło do stanu początkowego.
 
 
-#### 8.4.2. CPU Stress
+Przed zastosowaniem eksperymentu:
 
-Eksperyment polega na nagłym obciążeniu CPU przydzielonego do wskazanego poda. W konfiguracji testu zdefiniowano następujące parametry:
-- docelowy pod: odpowiedzialny za autoryzację użytkowników czatu,
-- liczba wątków aplikujących obciążenie procesora: 4,
-- zajętość procesora osiągnięta w wyniku eksperymentu: 80%.
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/4c3de997-05c4-4dc4-9f0f-5d8de3f9394d)
 
-Plik ```stress_test_cpu.yaml``` zawierający konfigurację testu:
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/130db0a1-0cf9-4d73-9a49-f23c8230fc22)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/2f43f6ac-2622-4d0c-96b3-8e63272780d0)
+
+
+Po zastosowaniu eksperymentu:
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/a99da35f-f609-4955-ba62-0bb762bc4a32)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/1360ea44-9899-4c07-bd1e-7e8d3b161132)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/0bc1b7e1-0022-4059-8639-3e0aac050d03)
+
+
+Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+
+[stress_test_memory_selected_pod.webm](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/7e1fb0a4-85a5-413c-b28d-5ccb95b4811c)
+
+
+#### 8.4.1.2. Memory Stress - kilka losowych podów
+
+Eksperyment polega na nagłym obciążeniu pamięci RAM przydzielonej do kilku losowo wybranych podów. W konfiguracji testu zdefiniowano następujące parametry:
+- tryb eksperymentu: _fixed_ z parametrem 3, oznacza wybór 3 losowych podów z domyślnej przestrzeni nazw,
+- liczba wątków aplikujących obciążenie pamięci: 8,
+- rozmiar pamięci zajętej w wyniku eksperymentu: 6144MB.
+
+Plik ```stress_test_memory_many_pods.yaml``` zawierający konfigurację testu:
 
 ```yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: StressChaos
 metadata:
-  name: cpu-stress-1
+  name: memory-stress-many-pods
+  namespace: chaos-mesh
+spec:
+  mode: fixed
+  value: '3'
+  selector:
+    namespaces:
+      - default
+  stressors:
+    memory:
+      workers: 8
+      size: '6144MB'
+```
+
+Uruchomienie eksperymentu:
+
+```kubectl apply -f stress_test_memory_many_pods.yaml```
+
+Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard z API Metrics Server oraz polecenia ```watch -n 1 kubectl top pods```. 
+Efekt testu był zgodny z oczekiwaniem. Po zaaplikowaniu eksperymentu zauważono nagły wzrost obciążenia pamięci RAM dla 3 losowo wybranych podów. Test zaalokował prawie całą pamięć RAM przydzieloną klastrowi, co spowodowało niestabilne działanie całego klastra, m.in. błędy działania metryk i poda odpowiedzialnego za Kubernetes Dashboard.  Po usunięciu testu obciążenie pamięci RAM wszystkich podów w klastrze wróciło do stanu początkowego.
+
+
+Przed zastosowaniem eksperymentu:
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/d7040bc4-68fd-45b5-b3f2-fae0ac852e6a)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/76a2ffe6-e9c2-40e6-9297-4eb199eb38a6)
+
+
+Po zastosowaniu eksperymentu:
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/af908e15-a4c3-4ad4-b5e3-7d2839dde67f)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/c2ff208e-d484-4e22-984a-60c17a97923a)
+
+
+Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+
+[stress_test_memory_many_pods.webm](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/7ceacd7f-eca1-4c0f-b051-fa7965b77c00)
+
+
+#### 8.4.2. CPU Stress
+
+Eksperyment polega na nagłym obciążeniu CPU przydzielonego do pojedynczego, losowo wybranego poda. W konfiguracji testu zdefiniowano następujące parametry:
+- tryb eksperymentu: _one_, oznacza wybór jednego losowego poda z domyślnej przestrzeni nazw,
+- liczba wątków aplikujących obciążenie procesora: 4,
+- zajętość procesora osiągnięta w wyniku eksperymentu: 80%.
+
+Plik ```stress_test_cpu_random_pod.yaml``` zawierający konfigurację testu:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: cpu-stress-random-pod
   namespace: chaos-mesh
 spec:
   mode: one
   selector:
     namespaces:
       - default
-    labelSelectors:
-      'app': 'chat-authorization-deployment'
   stressors:
     cpu:
       workers: 4
@@ -969,9 +1047,32 @@ spec:
 
 Uruchomienie eksperymentu:
 
-```kubectl apply -f stress_test_cpu.yaml```
+```kubectl apply -f stress_test_cpu_random_pod.yaml```
 
-Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard oraz polecenia ```watch -n 1 kubectl top pods```. Efekt testu był zgodny z oczekiwaniem, zauważono nagły wzrost obciążenia procesora dla wskazanego poda. Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+Działanie eksperymentu przetestowano przy użyciu narzędzia Kubernetes Dashboard z API Metrics Server oraz polecenia ```watch -n 1 kubectl top pods```.
+Efekt testu był zgodny z oczekiwaniem - po zaaplikowaniu eksprymentu zauważono nagły wzrost obciążenia procesora dla jednego losowo wybranego poda. Po usunięciu testu obciążenie CPU wróciło do stanu początkowego.
+
+
+Przed zastosowaniem eksperymentu:
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/c12008ed-722e-4bd9-8495-672afa65ee66)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/e1fc49a5-0d2e-4e84-aacc-2247d3f39423)
+
+
+Po zastosowaniu eksperymentu:
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/4a3715f8-b03e-4f75-bec0-9076fc6f49dc)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/ea4e6dee-d1c9-40ca-8a49-6fe38dfe6db3)
+
+![image](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/2d0ebeb9-6e76-4751-a72f-e1a05f9a4e8b)
+
+
+Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
+
+[stress_test_cpu_random_pod.webm](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f97da2ad-14ea-4890-8c1b-a30cbf415d5c)
+
 
 ## 9. Podsumowanie i wnioski
 
