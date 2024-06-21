@@ -1074,6 +1074,49 @@ Poprawne działanie eksperymentu przedstawiono na poniższym filmie.
 [stress_test_cpu_random_pod.webm](https://github.com/Vertemi/Chaos_Mesh/assets/72327045/f97da2ad-14ea-4890-8c1b-a30cbf415d5c)
 
 
+#### 8.5. Network
+
+Eksperyment polega na rozdieleniu sieci dla poda odpowiedzialnego za autoryzację i Treafika. Spowoduje to brak możliwości połączenia między tymi elementami, a tym samym brak możliwości autoryzacji użytkownika. 
+
+Konfigurację zdefiniowano w następującym pliku ```networkpartition.yaml```:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: partition
+spec:
+  action: partition
+  mode: all
+  selector:
+    namespaces:
+      - default
+    pods:
+      default:
+       - traefik-7bd8498dc4-t4x8d 
+  direction: to
+  duration: 120s
+  target:
+    mode: all
+    selector:
+      namespaces:
+        - default
+      pods:
+        default:
+          - chat-authorization-deployment-7b477fd644-zg65x
+```
+Uruchomiemie eksperymentu:
+
+```kubectl apply -f networkpartition.yaml```
+
+Demonstracja działania:
+
+
+https://github.com/Eternalynx/Chaos_Mesh/assets/50592516/276576db-1d97-465f-bfe0-493b25809311
+
+
+Jak widać przed uruchomieniem eksperymentu użytkownik był w stanie się zalogować, natomiast po uruchomieniu przycisk logowania przestał reagować, a po chwili od naciśnięcia go pojawił się komunikat z błędem
+
 ## 9. Podsumowanie i wnioski
 
 ## 10. Bibliografia

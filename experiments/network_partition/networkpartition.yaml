@@ -1,0 +1,23 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: partition
+spec:
+  action: partition
+  mode: all
+  selector:
+    namespaces:
+      - default
+    pods:
+      default:
+       - traefik-7bd8498dc4-t4x8d 
+  direction: to
+  duration: 120s
+  target:
+    mode: all
+    selector:
+      namespaces:
+        - default
+      pods:
+        default:
+          - chat-authorization-deployment-7b477fd644-zg65x
