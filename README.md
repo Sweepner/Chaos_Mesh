@@ -369,6 +369,9 @@ Załączono film prezentujący przykładowe użytkowanie aplikacji:
 https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9c0688dbd4e5
 
 ## 4. Architektura rozwiązania
+Wysokopoziomowe spojrzenie na architekturę rozwiązania. Wyszczególniono najważniejsze elementy klastra.
+
+![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/aa0bb6e7-99b4-4900-8ae4-e8e45f9503bd)
 
 ## 5. Konfiguracja środowiska
 
