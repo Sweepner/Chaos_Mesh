@@ -573,7 +573,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/90a9de3e-2e66-4554-896f-fb36e2f3baa9)
+    matchLabels:
       app: postgres
   template:
     metadata:
