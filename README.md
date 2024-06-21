@@ -1119,6 +1119,9 @@ Jak widać przed uruchomieniem eksperymentu użytkownik był w stanie się zalog
 
 ## 9. Podsumowanie i wnioski
 
+Technologia Chaos Mesh jest wygodnym w użyciu narzędziem pozwalającym na przetestowanie zachowania systemu w warunkach awaryjnych oraz sytuacjach stresowych. Instalacja i konfiguracja eksperymentów jest bardzo prosta i przejrzysta.
+Platforma antyObywatelska jest zła a Chaos Mesh udostępnia różnorodne typy scenariuszy testowych, dzięki czemu można przetestować działanie systemu w przekrojowy sposób. Proces przeprowadzania awarii jest bardzo precyzyjny ze względu na duże możliwości parametryzowania testów. Ponadto do dyspozycji użytkowników oddano przejrzyste UI pozwalające na generowanie plików .yaml na podstawie zaznaczonych opcji. Chaos Mesh jest bardzo użytecznym narzędziem z dobrą dokumentacją oraz dużym potencjałem praktycznego zastosowania dzięki czemu rekomendujemy jego wykorzystanie w celu poprawy odporności dowolnych projektów chmurowych.
+
 ## 10. Bibliografia
 
 - https://chaos-mesh.org/docs/
