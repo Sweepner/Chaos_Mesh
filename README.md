@@ -369,9 +369,10 @@ Załączono film prezentujący przykładowe użytkowanie aplikacji:
 https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9c0688dbd4e5
 
 ## 4. Architektura rozwiązania
-Wysokopoziomowe spojrzenie na architekturę rozwiązania. Wyszczególniono najważniejsze elementy klastra.
 
-![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/278491aa-498a-44c3-b0ab-1d050fde0803)
+Wysokopoziomowe spojrzenie na architekturę rozwiązania przedstawiono za pomocą diagramu. Wyszczególniono najważniejsze elementy klastra.
+
+![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/90a9de3e-2e66-4554-896f-fb36e2f3baa9)
 
 
 ## 5. Konfiguracja środowiska
@@ -572,7 +573,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:
+    matchLabels:![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/90a9de3e-2e66-4554-896f-fb36e2f3baa9)
       app: postgres
   template:
     metadata:
@@ -934,13 +935,15 @@ helm install chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-mesh --create-na
 
 ## 7. Sposób odtworzenia krok po kroku
 
-Przygotowano skrypty, które stawiają całe środowisko od zera.
+Przygotowano skrypty, które stawiają całe środowisko od zera:
 
-[skrypt resetujący środowisko minikube](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/resetMinikube.sh)
+- [skrypt resetujący środowisko minikube](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/resetMinikube.sh)
 
-[skrypt uruchamiający środowisko od zera](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/startEverything.sh)
+- [skrypt uruchamiający środowisko od zera](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/startEverything.sh)
 
-[skrypt uruchamiający dashboard kubernetesa](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/startDashboard.sh)
+- [skrypt uruchamiający Kubernetes Dashboard](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/startDashboard.sh)
+
+Konfiguracja przykładowych eksperymentów znajduje się w folderze [experiments](https://github.com/Sweepner/Chaos_Mesh/tree/main/experiments). Szczegółowe informacje na temat uruchomienia i monitoringu poszczególnych testów zawarto w kolejnym punkcie dokumentacji.
 
 ## 8. Demonstracyjny sposób wdrożenia
 
