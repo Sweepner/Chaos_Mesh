@@ -371,7 +371,8 @@ https://github.com/Sweepner/Chaos_Mesh/assets/72269056/127a4655-bb66-4a76-919e-9
 ## 4. Architektura rozwiązania
 Wysokopoziomowe spojrzenie na architekturę rozwiązania. Wyszczególniono najważniejsze elementy klastra.
 
-![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/aa0bb6e7-99b4-4900-8ae4-e8e45f9503bd)
+![Chaos_Mesh_arch](https://github.com/Sweepner/Chaos_Mesh/assets/72269056/278491aa-498a-44c3-b0ab-1d050fde0803)
+
 
 ## 5. Konfiguracja środowiska
 
