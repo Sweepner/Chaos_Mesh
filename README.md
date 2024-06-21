@@ -936,7 +936,7 @@ helm install chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-mesh --create-na
 
 Przygotowano skrypty, które stawiają całe środowisko od zera.
 
-[Skrypt resetujący środowisko minikube](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/resetMinikube.sh)
+[skrypt resetujący środowisko minikube](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/resetMinikube.sh)
 
 [skrypt uruchamiający środowisko od zera](https://github.com/Sweepner/Chaos_Mesh/blob/main/k8s/startEverything.sh)
 
