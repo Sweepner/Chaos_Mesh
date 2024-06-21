@@ -1,0 +1,26 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minikube-dashboard-ingressroute
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: kubernetes-dashboard-auth
+      services:
+        - name: kubernetes-dashboard
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: kubernetes-dashboard-auth
+  namespace: kubernetes-dashboard
+spec:
+  basicAuth:
+    secret: kubernetes-dashboard-auth
+    removeHeader: true

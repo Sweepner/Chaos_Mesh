@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4b155a44-0c27-4713-8606-746a95cdd697" name="rodzonvm">
+        <fileTransfer accessType="SFTP" host="www.rodzon.site" port="6000" sshConfigId="dae3e10c-d0f3-4fc7-8c4b-e30083f409df" sshConfig="rodzon@www.rodzon.site:6000 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
