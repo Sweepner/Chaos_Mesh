@@ -754,12 +754,162 @@ kubectl apply -f service.yaml
 
 ### 5.3 Ingress route do klastra kubernetesowego.
 
+Aby nie wystawiać wielu portów oparliśmy roting do mikroserwisów aplikacji na path prefixach.
+
+#### 5.3.1 Traefik
+
+Jako ingress użyto technologii Traefik. Zainstalowano go za pomocą paczki helm. Niestandardową konfigurację umieściliśmy w pliku values.yaml:
+
+``` yaml
+image:
+  name: traefik
+  tag: v3.0.3
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  spec:
+    externalTrafficPolicy: Local
+  externalIPs:
+    - 10.102.13.33
+  ports:
+    web:
+      port: 80
+      expose: true
+      exposedPort: 80
+      protocol: TCP
+# Configuring logs
+logs:
+  general:
+    level: TRACE
+  access:
+    enabled: true
+    fields:
+      general:
+        defaultMode: keep
+
+rbac:
+  enabled: true
 
 
+additionalArguments:
+  - "--api.dashboard=true"
+```
+
+Instalacja traefika:
+
+```
+helm install traefik traefik/traefik -f values.yaml
+```
+
+#### 5.3.2 Konfiguracja routingu
+
+#### 5.3.2.1 ChatWithMe app
+
+``` yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: spring-boot-ingressroute
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/chat/authorization`)
+      kind: Rule
+      services:
+        - name: chat-authorization-service
+          port: 80
+      middlewares:
+        - name: chat-authorization-strip-prefix
+    - match: PathPrefix(`/chat/message`)
+      kind: Rule
+      services:
+        - name: chat-message-service
+          port: 80
+      middlewares:
+        - name: chat-message-strip-prefix
+    - match: PathPrefix(`/chat/call`)
+      kind: Rule
+      services:
+        - name: chat-call-service
+          port: 80
+      middlewares:
+        - name: chat-call-strip-prefix
+```
+
+Aby aplikacja działała poprawie należało wyciąć prefixy służące do routingu.
+
+``` yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chat-authorization-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - "/chat/authorization"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chat-call-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - "/chat/call"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chat-message-strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - "/chat/message"
+```
+
+#### 5.3.2.2 Kubernetes dashboard
+
+``` yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minikube-dashboard-ingressroute
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: kubernetes-dashboard-auth
+      services:
+        - name: kubernetes-dashboard
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: kubernetes-dashboard-auth
+  namespace: kubernetes-dashboard
+spec:
+  basicAuth:
+    secret: kubernetes-dashboard-auth
+    removeHeader: true
+```
+
+Wszystkie pliki yaml należy zaaplikować do klastra za pomocą komendy:
+
+```
+kubectl apply -f <nazwa_pliku.yaml>
+```
 
 ## 6. Metoda instalacji
 
-### 6.1. Instalacja aplikacji bazowej
+### 6.1. Instalacja aplikacji mobilnej
 
 W celu użytkowania aplikacji należy zainstalować ją na wybranym urządzeniu z systemem operacyjnym Android.
 
@@ -770,13 +920,19 @@ Minimalne wymagania sprzętowe i programowe:
 
 W celu zainstalowania aplikacji należy pobrać udostępniony przez administratora systemu plik .apk programu oraz zainstalować go na urządzeniu mobilnym spełniającym minimalne wymagania sprzętowe i programowe.
 
-Aby móc używać aplikacji należy zbudować obrazy dockerowe za pomocą polecenia ```docker build -tag <nazwa_obrazu>``` z plików *dockerfile* dla trzech mikroserwisów oraz bazy danych, utworzyć sieć dockerową za pomocą polecenia ```docker network create <nazwa_sieci>```, uzupełnić skrypt *docker-compose.yml* o nazwy utworzonych obrazów dockerowych mikroserwisów, bazy danych oraz o nazwę utworzonej sieci dockerowej, a następnie uruchomić skrypt *docker-compose.yml* za pomocą polecenia ```docker-compose up -d```, który uruchomi wszystkie serwisy wraz z bazą danych. W celu uruchomienia aplikacji bez Dockera można wystawić serwisy jako usługi systemowe.
+### 6.2. Instalacja aplikacji Chaos Mesh
 
-Istotną sprawą jest wystawienie konkretnych portów za NAT aby usługi były dostępne poza siecią lokalną localhost. Sugerowane jest skonfigurowanie serwera proxy (serwer pośredniczący) i wystawienie usług do Internetu za jego pośrednictwem.
+Platformę Chaos Mesh zainstalowano z użyciem helm chart.
 
-### 6.2. Instalacja aplikacji z Chaos Mesh
+```
+helm install chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-mesh --create-namespace
+```
 
 ## 7. Sposób odtworzenia krok po kroku
+
+Przygotowano skrypty, które stawiają całe środowisko od zera.
+
+[startEverything.sh](/)
 
 ## 8. Demonstracyjny sposób wdrożenia
 
