@@ -7,5 +7,5 @@ metadata:
 data:
   POSTGRES_DB: postgres
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: suuChaos2024
+  POSTGRES_PASSWORD: ******* //replace with true password
   
